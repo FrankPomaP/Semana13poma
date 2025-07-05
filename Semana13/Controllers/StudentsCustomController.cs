@@ -98,5 +98,52 @@ namespace Semana13.Controllers
 
             return response;
         }
+
+        [HttpPut]
+        public void UpdateStudentContact([FromBody] StudentContactUpdateRequest request)
+        {
+            var student = _context.Students.FirstOrDefault(s => s.StudentId == request.StudentId && s.Activo == 1);
+
+            if (student != null)
+            {
+                student.Phone = request.Phone;
+                student.Email = request.Email;
+
+                _context.SaveChanges();
+            }
+        }
+
+        [HttpPut]
+        public void UpdateStudentPersonal([FromBody] StudentPersonalUpdateRequest request)
+        {
+            var student = _context.Students.FirstOrDefault(s => s.StudentId == request.StudentId && s.Activo == 1);
+
+            if (student != null)
+            {
+                student.FirstName = request.FirstName;
+                student.LastName = request.LastName;
+
+                _context.SaveChanges();
+            }
+        }
+
+        [HttpPost]
+        public void InsertStudentListByGrade([FromBody] StudentListByGradeRequest request)
+        {
+            var students = request.Students.Select(s => new Student
+            {
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                Phone = s.Phone,
+                Email = s.Email,
+                GradeId = request.GradeId,
+                Activo = 1
+            }).ToList();
+
+            _context.Students.AddRange(students);
+            _context.SaveChanges();
+        }
+
+
     }
 }
